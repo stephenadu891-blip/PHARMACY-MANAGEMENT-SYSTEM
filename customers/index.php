@@ -1,0 +1,10 @@
+<?php
+require_once "../config/app.php"; require_login();
+$page_title="Customers";
+if($_SERVER["REQUEST_METHOD"]==="POST"){verify_csrf();$id=(int)($_POST["id"]??0);$name=trim($_POST["fullname"]??"");$phone=trim($_POST["phone"]??"");$email=trim($_POST["email"]??"");$address=trim($_POST["address"]??"");
+ if($name!==""){$st=$conn->prepare("INSERT INTO customers(fullname,phone,email,address) VALUES(?,?,?,?)");$st->bind_param("ssss",$name,$phone,$email,$address);$st->execute();flash("success","Customer registered.");}else{flash("danger","Customer name is required.");}header("Location: index.php");exit;}
+$rows=$conn->query("SELECT * FROM customers ORDER BY id DESC");require "../includes/header.php";
+?>
+<div class="row g-3"><div class="col-lg-4"><div class="card"><div class="card-header">Register customer</div><div class="card-body"><form method="post"><input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>"><div class="mb-3"><label class="form-label">Full name *</label><input class="form-control" name="fullname" required></div><div class="mb-3"><label class="form-label">Phone</label><input class="form-control" name="phone"></div><div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" name="email"></div><div class="mb-3"><label class="form-label">Address</label><textarea class="form-control" name="address"></textarea></div><button class="btn btn-primary">Save customer</button></form></div></div></div>
+<div class="col-lg-8"><div class="card"><div class="card-header">Customer records</div><div class="card-body table-responsive"><table class="table"><thead><tr><th>Name</th><th>Phone</th><th>Email</th></tr></thead><tbody><?php if(!$rows->num_rows): ?><tr><td colspan="3">No customers registered.</td></tr><?php endif; ?><?php while($c=$rows->fetch_assoc()): ?><tr><td><?= e($c["fullname"]) ?></td><td><?= e($c["phone"]) ?></td><td><?= e($c["email"]) ?></td></tr><?php endwhile; ?></tbody></table></div></div></div></div>
+<?php require "../includes/footer.php"; ?>
