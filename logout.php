@@ -1,4 +1,5 @@
-<?php
+<?php 
+// Handles user session termination, cookie cleanup, and secure logout redirect
 require_once "config/app.php";
 $_SESSION = [];
 if (ini_get("session.use_cookies")) {
