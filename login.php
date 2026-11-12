@@ -1,4 +1,4 @@
-<?php
+<?php // Handles staff authentication, CSRF validation, and user session initialization
 require_once __DIR__ . "/config/app.php";
 
 if (!empty($_SESSION["user_id"])) {
